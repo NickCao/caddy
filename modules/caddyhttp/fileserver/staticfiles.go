@@ -29,6 +29,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"go.uber.org/zap"
@@ -769,6 +770,7 @@ func calculateEtag(d os.FileInfo) string {
 	sb.WriteRune('"')
 	sb.WriteString(strconv.FormatInt(mtime.UnixNano(), 36))
 	sb.WriteString(strconv.FormatInt(d.Size(), 36))
+	sb.WriteString(strconv.FormatUint(d.Sys().(*syscall.Stat_t).Ino, 36))
 	sb.WriteRune('"')
 	return sb.String()
 }
