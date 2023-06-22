@@ -29,6 +29,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -738,13 +739,11 @@ func (fsrv *FileServer) notFound(w http.ResponseWriter, r *http.Request, next ca
 // which we consider precise enough to qualify as a strong validator.
 func calculateEtag(d os.FileInfo) string {
 	mtime := d.ModTime()
-	if mtimeUnix := mtime.Unix(); mtimeUnix == 0 || mtimeUnix == 1 {
-		return "" // not useful anyway; see issue #5548
-	}
 	var sb strings.Builder
 	sb.WriteRune('"')
 	sb.WriteString(strconv.FormatInt(mtime.UnixNano(), 36))
 	sb.WriteString(strconv.FormatInt(d.Size(), 36))
+	sb.WriteString(strconv.FormatUint(d.Sys().(*syscall.Stat_t).Ino, 36))
 	sb.WriteRune('"')
 	return sb.String()
 }
