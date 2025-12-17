@@ -180,3 +180,5 @@ require (
 	google.golang.org/protobuf v1.36.10 // indirect
 	howett.net/plist v1.0.0 // indirect
 )
+
+replace github.com/mholt/acmez/v3 => github.com/NickCao/acmez/v3 v3.0.0-20251217030747-39a7e71fc216
